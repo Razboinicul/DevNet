@@ -6,7 +6,6 @@ layout = [  [sg.Text("What's your name?")],
             [sg.Button('Ok'), sg.Button('Cancel')] ]
 
 # Create the Window
-window = sg.Window('Hello Example', layout)
 
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
