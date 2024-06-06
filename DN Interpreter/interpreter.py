@@ -13,9 +13,23 @@ class Interpreter:
             self = None
         self.index = 0
         self.win_title = "App"
+        self.forever = []
     
     def interpret(self, line):
-        args = line.split(" ")
+        argg = line.split(" ")
+        args = []
+        txt = ""
+        for i in argg:
+            if i.startswith('"') or i.startswith("'"):
+                txt += i.removeprefix('"') if i.startswith('"') else i.removeprefix("'")
+            elif not (i.endswith("'") or i.endswith('"')) and txt != "":
+                txt += i
+            elif (i.endswith("'") or i.endswith('"')):
+                txt += i.removesuffix('"') if i.endswith('"') else i.removesuffix("'")
+                args.append(txt)
+                txt = ""
+            else:
+                args.append(i)
         start = args.pop(0)
         if start.lower() == "start":
             pass
@@ -26,6 +40,18 @@ class Interpreter:
             self.win_title = " ".join(args)
         elif start.lower() == "text":
             self.layout.append([sg.Text(" ".join(args))])
+        elif start.lower() == "input":
+            arg = []
+            for i in args:
+                arg.append(i.split("="))
+            obj = sg.InputText('')
+            for i in arg:
+                if len(i) == 2:
+                    if i[0].lower() == "text":
+                        obj.DefaultText = i[1]
+                    if i[0].lower() == "whileTrue":
+                        self.forever.append(f"{i[1]}()")
+            self.layout.append([obj])
         else:
             print(start+": Command not found")
     
